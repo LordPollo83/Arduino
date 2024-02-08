@@ -1,0 +1,52 @@
+#include <Wire.h> 
+#include "RTClib.h"
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Dirección LCD  0x3F o 0x27  y 16 columnas x 2 filas
+RTC_DS1307 RTC;
+
+void setup() {
+  Wire.begin();
+  RTC.begin();
+  // RTC.adjust(DateTime(__DATE__, __TIME__)); // Ajuste fecha/hora inicial
+  Serial.begin(9600);
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+}
+
+void loop() {
+  DateTime now = RTC.now();
+
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day(), DEC);
+  Serial.print(' ');
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
+
+  lcd.setCursor(0, 0);
+  lcd.print("Fecha: ");
+  lcd.print(now.day(), DEC);
+  lcd.print("/");
+  lcd.print(now.month(), DEC);
+  lcd.print("/");
+  lcd.print(now.year(), DEC);
+
+  lcd.setCursor(0, 1);
+  lcd.print("Hora: ");
+  lcd.print(now.hour(), DEC);
+  lcd.print(":");
+  lcd.print(now.minute(), DEC);
+  lcd.print(":");
+  lcd.print(now.second(), DEC);
+
+  delay(1000);
+  lcd.clear();
+}
